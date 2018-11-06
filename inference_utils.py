@@ -114,7 +114,7 @@ class inferencer_on_image:
 	        output_dict['detection_masks'] = output_dict['detection_masks'][0]
 	  return output_dict
 
-	def detection(self, image_path):
+	def detect(self, image_path):
 
 		image = Image.open(image_path)
 		# the array based representation of the image will be used later in order to prepare the
@@ -124,11 +124,65 @@ class inferencer_on_image:
 		image_np_expanded = np.expand_dims(image_np, axis=0)
 		# Actual detection.
 		output_dict = self.run_inference_for_single_image(image_np, self.detection_graph)
-		return output_dict
+		return output_dict, image_np
+
+	def save_detected_image(self, image_path, saving_path, saved_name_image):
+		output_dict, image_np = self.detect(image_path)
+		# for saving the images in a folder
+		# # TODO: save images in a folder whose name is based on the model and date of the data
+		
+        
+		vis_util.visualize_boxes_and_labels_on_image_array(
+			image_np,
+			output_dict['detection_boxes'],
+			output_dict['detection_classes'],
+			output_dict['detection_scores'],
+			self.category_index,
+			instance_masks=output_dict.get('detection_masks'),
+			use_normalized_coordinates=True,
+			line_thickness=8)
+		
+		im = Image.fromarray(image_np)
+		# 	# relative paths
+		#dir = os.path.dirname(os.path.realpath('__file__'))
+		#directory = os.path.join(dir, 'out')
 
 
+		if not os.path.exists(saving_path):
+			os.makedirs(saving_path)
+
+		# name = "out_" + str(i) + ".jpg"
+		# file_path = os.path.join(directory, name)
+		file_path = os.path.join(saving_path, saved_name_image)
+		im.save(file_path)
 
 
+		boxes = output_dict['detection_boxes']
+		print ("boxes = output_dict[detection_boxes]")
+		im_width, im_height = im.size
+		for box in boxes:
+			if box.any() != 0: #[0, 0, 0, 0]:
+				ymin, xmin, ymax, xmax = box
+				(left, right, top, bottom) = (xmin * im_width, xmax * im_width,
+                                  ymin * im_height, ymax * im_height)
+				print (left, right, top, bottom)
+	
 
+	def generate_xml_annotation(self, image_path):
 
+		output_dict, image_np = self.detect(image_path)
+		im = Image.fromarray(image_np)
 
+		boxes = output_dict['detection_boxes']
+		classes = output_dict['detection_classes']
+		scores = output_dict['detection_scores']
+		im_width, im_height = im.size
+
+		xml_data = []
+		for i in range (0, len(boxes)):
+			if boxes[i].any() != 0:
+				ymin, xmin, ymax, xmax = boxes[i]
+				(left, right, top, bottom) = (xmin * im_width, xmax * im_width,
+                                  ymin * im_height, ymax * im_height)
+				xml_data.append([classes[i], scores[i], [int(left), int(right), int(top), int(bottom)]])
+				

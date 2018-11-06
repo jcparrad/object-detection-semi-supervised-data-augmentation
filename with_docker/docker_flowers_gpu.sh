@@ -14,7 +14,7 @@ sudo nvidia-docker run -it \
   --env="QT_X11_NO_MITSHM=1" \
   --privileged -v /dev/video0:/dev/video0 \
   --device /dev/video0 \
-  -v /home/millenium/Juan_Camilo/flores/source/inference:/home/detection  \
+  -v /home/millenium/Juan_Camilo/flores/obj_api_2_flores/flores/source/inference:/home/detection  \
   -p 8889:8888 -p 6009:6006 camilol/tensorflow:gpu-py3-object-detection /bin/bash
 
 #  --net="host"\

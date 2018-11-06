@@ -185,3 +185,13 @@ for image_path in TEST_IMAGE_PATHS:
   # name = "out_" + str(i) + ".jpg"
   # file_path = os.path.join(directory, name)
   # im.save(file_path)
+
+def draw_infereced_labels_on_images():
+	pass
+
+def operation(op):
+	print (op)
+
+
+ if __name__ == "__main__":
+ 	operation ("draw_infereced_labels_on_images")

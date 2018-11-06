@@ -1,0 +1,31 @@
+2018-11-06 15:46:03.780951: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-11-06 15:46:05.476644: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:897] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-11-06 15:46:05.477122: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1405] Found device 0 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:01:00.0
+totalMemory: 11.17GiB freeMemory: 11.09GiB
+2018-11-06 15:46:05.477139: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
+2018-11-06 15:46:05.644139: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-11-06 15:46:05.644202: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0 
+2018-11-06 15:46:05.644211: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N 
+2018-11-06 15:46:05.644423: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10750 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:01:00.0, compute capability: 3.5)
+Traceback (most recent call last):
+  File "test_inference.py", line 12, in <module>
+    output_dict = detector.detection(image_path)
+  File "/home/detection/source/inference/inference_utils.py", line 126, in detection
+    output_dict = self.run_inference_for_single_image(image_np, self.detection_graph)
+  File "/home/detection/source/inference/inference_utils.py", line 103, in run_inference_for_single_image
+    feed_dict={image_tensor: np.expand_dims(image, 0)})
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 877, in run
+    run_metadata_ptr)
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 1100, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 1272, in _do_run
+    run_metadata)
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 1278, in _do_call
+    return fn(*args)
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 1263, in _run_fn
+    options, feed_dict, fetch_list, target_list, run_metadata)
+  File "/root/.virtualenvs/gpu-py3/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 1350, in _call_tf_sessionrun
+    run_metadata)
+KeyboardInterrupt

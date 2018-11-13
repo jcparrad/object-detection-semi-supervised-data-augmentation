@@ -1,0 +1,1 @@
+python test_inference.py 2>&1 | tee log.txt

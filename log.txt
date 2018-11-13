@@ -1,19 +1,19 @@
-2018-11-06 22:10:37.050396: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
-2018-11-06 22:10:38.738433: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:897] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2018-11-06 22:10:38.738919: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1405] Found device 0 with properties: 
+2018-11-07 21:46:28.280596: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-11-07 21:46:29.970484: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:897] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-11-07 21:46:29.971049: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1405] Found device 0 with properties: 
 name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
 pciBusID: 0000:01:00.0
 totalMemory: 11.17GiB freeMemory: 11.09GiB
-2018-11-06 22:10:38.738934: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
-2018-11-06 22:10:38.904041: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
-2018-11-06 22:10:38.904082: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0 
-2018-11-06 22:10:38.904088: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N 
-2018-11-06 22:10:38.904340: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10750 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:01:00.0, compute capability: 3.5)
-2018-11-06 22:10:42.759795: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
-2018-11-06 22:10:42.759842: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
-2018-11-06 22:10:42.759847: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0 
-2018-11-06 22:10:42.759851: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N 
-2018-11-06 22:10:42.760017: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10750 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:01:00.0, compute capability: 3.5)
+2018-11-07 21:46:29.971073: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
+2018-11-07 21:46:30.132179: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-11-07 21:46:30.132223: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0 
+2018-11-07 21:46:30.132228: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N 
+2018-11-07 21:46:30.132524: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10750 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:01:00.0, compute capability: 3.5)
+2018-11-07 21:46:33.388669: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
+2018-11-07 21:46:33.388717: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-11-07 21:46:33.388723: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0 
+2018-11-07 21:46:33.388727: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N 
+2018-11-07 21:46:33.388887: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10750 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:01:00.0, compute capability: 3.5)
 10
 [11 11  9 10  9 11  8  5  9  5  1  1  1  1  1  1  1  1  1  1  1  1  1  1
   1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1

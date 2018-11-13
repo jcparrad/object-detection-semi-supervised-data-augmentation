@@ -9,21 +9,32 @@ NUM_CLASSES = 13
 detector = in_utl.inferencer_on_image(PATH_TO_FROZEN_GRAPH, PATH_TO_LABELS, NUM_CLASSES)
 
 # only detect elements in the image
-image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
-output_dict, image_np = detector.detect(image_path)
-print (output_dict['num_detections'])
-print (output_dict['detection_classes'])
-print (output_dict['detection_boxes'])
-print (output_dict['detection_scores'])
+#image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
+#output_dict, image_np = detector.detect(image_path)
+#print (output_dict['num_detections'])
+#print (output_dict['detection_classes'])
+#print (output_dict['detection_boxes'])
+#print (output_dict['detection_scores'])
 #print (output_dict['detection_boxes'])
 
 # detect and save the detected elements inside the image
-image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
-saving_path = "/home/detection/source/inference/detected_images"
-saved_name_image = "frame_281_detected.jpg"
+#image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
+#saving_path = "/home/detection/source/inference/detected_images"
+#saved_name_image = "frame_281_detected.jpg"
+#xml_path = "/home/detection/source/inference/test_images/Annotations"
 #detector.save_detected_image(image_path, saving_path, saved_name_image)
-detector.generate_xml_annotation(image_path)
+#detector.get_detection_boxes(image_path)
+#detector.generate_xml_annotation(image_path, xml_path)
 
+xml_path = "/home/detection/source/inference/test_images/Annotations"
+image_directory = "/home/detection/source/inference/test_images"
+for filename in os.listdir(image_directory):
+    if filename.endswith(".jpg") or filename.endswith(".JPG"): 
+    	image_path = os.path.join(image_directory, filename)
+    	print(image_path)
+    	detector.generate_xml_annotation(image_path, xml_path)
+    
+    
 # for all images in a folder, detect and save the detected elements inside the image
 
 # saving_path = "/home/detection/source/inference/detected_images"

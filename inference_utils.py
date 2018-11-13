@@ -19,6 +19,7 @@ from PIL import Image
 
 sys.path.insert(0, "/home/obj_api_2/models/research/object_detection")
 sys.path.append("/home/obj_api_2/models/research")
+
 from object_detection.utils import ops as utils_ops
 
 if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
@@ -27,7 +28,9 @@ if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
-
+import os
+import shutil
+import xml.etree.ElementTree as ET
 
 class inferencer_on_image:
 	def __init__ (self, PATH_TO_FROZEN_GRAPH, PATH_TO_LABELS, NUM_CLASSES):
@@ -48,6 +51,22 @@ class inferencer_on_image:
 		self.label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 		self.categories = label_map_util.convert_label_map_to_categories(self.label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 		self.category_index = label_map_util.create_category_index(self.categories)
+
+		self.labels =   {
+						  1: "P1",
+						  2: "P1_1",
+						  3: "P1_2",
+						  4: "P2",
+						  5: "P2_1",
+						  6: "P3",
+						  7: "P3_1",
+						  8: "P4",
+						  9: "P5",
+						  10: "P5_1",
+						  11: "P6",
+						  12: "P7",
+						  13: "P8"
+						}
 
 	# Helper code
 	def load_image_into_numpy_array(self, image):
@@ -168,7 +187,7 @@ class inferencer_on_image:
 				print (left, right, top, bottom)
 	
 
-	def generate_xml_annotation(self, image_path):
+	def get_detection_boxes(self, image_path):
 
 		output_dict, image_np = self.detect(image_path)
 		im = Image.fromarray(image_np)
@@ -178,11 +197,72 @@ class inferencer_on_image:
 		scores = output_dict['detection_scores']
 		im_width, im_height = im.size
 
-		xml_data = []
+		boxes_data = []
 		for i in range (0, len(boxes)):
 			if boxes[i].any() != 0:
 				ymin, xmin, ymax, xmax = boxes[i]
 				(left, right, top, bottom) = (xmin * im_width, xmax * im_width,
                                   ymin * im_height, ymax * im_height)
-				xml_data.append([classes[i], scores[i], [int(left), int(right), int(top), int(bottom)]])
-				
+				boxes_data.append([classes[i], scores[i], [int(left), int(right), int(top), int(bottom)]])
+
+		#for i in range(0, len(boxes_data)):
+		#	print (boxes_data[i])
+
+		return boxes_data, im
+
+	def generate_xml_annotation(self, image_path, xml_path):
+
+		boxes_data, im = self.get_detection_boxes(image_path)
+		annotation = ET.Element("annotation")
+
+		ET.SubElement(annotation, "folder").text = "Images"
+		filename = image_path.split("/")[-1]
+		ET.SubElement(annotation, "filename").text = filename #"DJI_0210.JPG"
+		ET.SubElement(annotation, "path").text ="/home/path"
+
+		source = ET.SubElement(annotation, "source")
+		ET.SubElement(source, "database").text ="Unknown"
+
+		im_width, im_height = im.size
+		#mode_to_bpp = {'1':1, 'L':8, 'P':8, 'RGB':24, 'RGBA':32, 'CMYK':32, 'YCbCr':24, 'I':32, 'F':32}
+		#bpp = mode_to_bpp[im.mode]
+		#print ("im_width", im_width)
+		#print ("im_height", im_height)
+		#print ("data.mode", im.mode)
+		#print ("bpp", bpp)
+
+		size = ET.SubElement(annotation, "size")
+		ET.SubElement(size, "width").text =str(im_width)
+		ET.SubElement(size, "height").text =str(im_height)
+		ET.SubElement(size, "depth").text =str(3)
+
+		ET.SubElement(annotation, "segmented").text ="0"
+
+		# This element is repeated for each label that the model generates
+		elements = [] # intentar con append 
+		for i in range (0, len(boxes_data)):
+			elements.append(ET.SubElement(annotation, "object"))
+			object_ = elements[i]
+			label = self.labels[boxes_data[i][0]]
+			ET.SubElement(object_, "name").text = label#"var_name_" + str(i)
+			ET.SubElement(object_, "pose").text ="Unspecified"
+			ET.SubElement(object_, "truncated").text ="0"
+			ET.SubElement(object_, "difficult").text ="0"
+			bndbox = ET.SubElement(object_, "bndbox")
+			# boxes are as follows:
+			#(left, right, top, bottom) = 
+			#	(xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height)
+			box = boxes_data[i][2]
+			ET.SubElement(bndbox, "xmin").text = str(box[0])
+			ET.SubElement(bndbox, "ymin").text = str(box[2])
+			ET.SubElement(bndbox, "xmax").text = str(box[1])
+			ET.SubElement(bndbox, "ymax").text = str(box[3])
+
+		tree = ET.ElementTree(annotation)
+
+		
+		if not os.path.exists(xml_path):
+			os.makedirs(xml_path)
+		name_xml = image_path.split("/")[-1].split(".")[0] + ".xml"		
+		xml_path = os.path.join(xml_path,name_xml)
+		tree.write(xml_path)

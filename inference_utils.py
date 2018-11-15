@@ -51,7 +51,7 @@ class inferencer_on_image:
 		self.label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 		self.categories = label_map_util.convert_label_map_to_categories(self.label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 		self.category_index = label_map_util.create_category_index(self.categories)
-
+		self.threshold = 0.6
 		self.labels =   {
 						  1: "P1",
 						  2: "P1_1",
@@ -188,6 +188,9 @@ class inferencer_on_image:
 	
 
 	def get_detection_boxes(self, image_path):
+		# this function detects the elements in the image 
+		# and return the boxes coordinates (left, right, top, bottom)
+		# and also the image
 
 		output_dict, image_np = self.detect(image_path)
 		im = Image.fromarray(image_np)
@@ -209,8 +212,21 @@ class inferencer_on_image:
 		#	print (boxes_data[i])
 
 		return boxes_data, im
+		
+	def set_threshold(self, threshold):
+		# this functions sets the htreshold that will allow a detected box be available
+		# to be annotated in the xml VOC file
+		self.threshold = threshold
 
 	def generate_xml_annotation(self, image_path, xml_path):
+		# this function generates the xml file
+		# their inputs are:
+		# 1. image_path: path where the image file is located
+		# 2. xml_path: path folder where to save the generated xml file
+		# It returns:
+		# 1. boxes_data: all the boxes that where detected in the image
+		# 2. cont_low_score: the number of boxes that had a score less than the threshold
+		# therefore these boxes are not available for the xml annotation file
 
 		boxes_data, im = self.get_detection_boxes(image_path)
 		annotation = ET.Element("annotation")
@@ -239,30 +255,39 @@ class inferencer_on_image:
 		ET.SubElement(annotation, "segmented").text ="0"
 
 		# This element is repeated for each label that the model generates
+		cont_low_score = 0
 		elements = [] # intentar con append 
 		for i in range (0, len(boxes_data)):
-			elements.append(ET.SubElement(annotation, "object"))
-			object_ = elements[i]
-			label = self.labels[boxes_data[i][0]]
-			ET.SubElement(object_, "name").text = label#"var_name_" + str(i)
-			ET.SubElement(object_, "pose").text ="Unspecified"
-			ET.SubElement(object_, "truncated").text ="0"
-			ET.SubElement(object_, "difficult").text ="0"
-			bndbox = ET.SubElement(object_, "bndbox")
-			# boxes are as follows:
-			#(left, right, top, bottom) = 
-			#	(xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height)
-			box = boxes_data[i][2]
-			ET.SubElement(bndbox, "xmin").text = str(box[0])
-			ET.SubElement(bndbox, "ymin").text = str(box[2])
-			ET.SubElement(bndbox, "xmax").text = str(box[1])
-			ET.SubElement(bndbox, "ymax").text = str(box[3])
+			if self.threshold <= boxes_data[i][1]:
+				print (boxes_data[i])
+				elements.append(ET.SubElement(annotation, "object"))
+				object_ = elements[i]
+				label = self.labels[boxes_data[i][0]]
+				ET.SubElement(object_, "name").text = label#"var_name_" + str(i)
+				ET.SubElement(object_, "pose").text ="Unspecified"
+				ET.SubElement(object_, "truncated").text ="0"
+				ET.SubElement(object_, "difficult").text ="0"
+				bndbox = ET.SubElement(object_, "bndbox")
+				# boxes are as follows:
+				#(left, right, top, bottom) = 
+				#	(xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height)
+				box = boxes_data[i][2]
+				ET.SubElement(bndbox, "xmin").text = str(box[0])
+				ET.SubElement(bndbox, "ymin").text = str(box[2])
+				ET.SubElement(bndbox, "xmax").text = str(box[1])
+				ET.SubElement(bndbox, "ymax").text = str(box[3])
+			else:
+				cont_low_score += 1
+
 
 		tree = ET.ElementTree(annotation)
 
 		
 		if not os.path.exists(xml_path):
 			os.makedirs(xml_path)
+
 		name_xml = image_path.split("/")[-1].split(".")[0] + ".xml"		
 		xml_path = os.path.join(xml_path,name_xml)
 		tree.write(xml_path)
+
+		return boxes_data, cont_low_score

@@ -1,47 +1,55 @@
 import inference_utils as in_utl 
 import os 
 
-PATH_TO_FROZEN_GRAPH = "/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/frozen_model/frozen_inference_graph.pb"
-# List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join("/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/flowers_label_map_ssd_mobilenet_v1_fpn_4.pbtxt")
-NUM_CLASSES = 13
 
-detector = in_utl.inferencer_on_image(PATH_TO_FROZEN_GRAPH, PATH_TO_LABELS, NUM_CLASSES)
+def generate_xml_files():
+	# Path to the frozen model
+	PATH_TO_FROZEN_GRAPH = "/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/frozen_model/frozen_inference_graph.pb"
+	
+	# List of the strings that is used to add correct label for each box.
+	PATH_TO_LABELS = os.path.join("/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/flowers_label_map_ssd_mobilenet_v1_fpn_4.pbtxt")
+	NUM_CLASSES = 13
 
-# only detect elements in the image
-#image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
-#output_dict, image_np = detector.detect(image_path)
-#print (output_dict['num_detections'])
-#print (output_dict['detection_classes'])
-#print (output_dict['detection_boxes'])
-#print (output_dict['detection_scores'])
-#print (output_dict['detection_boxes'])
+	# Initilize the detector
+	detector = in_utl.inferencer_on_image(PATH_TO_FROZEN_GRAPH, PATH_TO_LABELS, NUM_CLASSES)
 
-# detect and save the detected elements inside the image
-#image_path = "/home/detection/source/inference/test_images/frame_281.jpg"
-#saving_path = "/home/detection/source/inference/detected_images"
-#saved_name_image = "frame_281_detected.jpg"
-#xml_path = "/home/detection/source/inference/test_images/Annotations"
-#detector.save_detected_image(image_path, saving_path, saved_name_image)
-#detector.get_detection_boxes(image_path)
-#detector.generate_xml_annotation(image_path, xml_path)
+	# set the xml path folder where to save the generated xml files
+	xml_path = "/home/detection/source/inference/test_images/Annotations"
+	# set the folder that contains the images
+	image_directory = "/home/detection/source/inference/test_images"
+	# set the minimun threshold that the detected boxes must have for being able to be a label
+	detector.set_threshold(0.55)
+	for filename in os.listdir(image_directory):
+	    if filename.endswith(".jpg") or filename.endswith(".JPG"): 
+	    	image_path = os.path.join(image_directory, filename)
+	    	print(image_path)
+	    	# generate the xml annotation
+	    	detector.generate_xml_annotation(image_path, xml_path)
 
-xml_path = "/home/detection/source/inference/test_images/Annotations"
-image_directory = "/home/detection/source/inference/test_images"
-for filename in os.listdir(image_directory):
-    if filename.endswith(".jpg") or filename.endswith(".JPG"): 
-    	image_path = os.path.join(image_directory, filename)
-    	print(image_path)
-    	detector.generate_xml_annotation(image_path, xml_path)
+def detect_elements_and_save_image():
+
+	# Path to the frozen model
+	PATH_TO_FROZEN_GRAPH = "/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/frozen_model/frozen_inference_graph.pb"
+	
+	# List of the strings that is used to add correct label for each box.
+	PATH_TO_LABELS = os.path.join("/home/detection/flores/models/exported/model_ssd_mobilenet_v1_fpn_4/flowers_label_map_ssd_mobilenet_v1_fpn_4.pbtxt")
+	NUM_CLASSES = 13
+
+	# Initilize the detector
+	detector = in_utl.inferencer_on_image(PATH_TO_FROZEN_GRAPH, PATH_TO_LABELS, NUM_CLASSES)
     
-    
-# for all images in a folder, detect and save the detected elements inside the image
+	#for all images in a folder, detect and save the detected elements inside the image
+	saving_path = "/home/detection/source/inference/detected_images"
+	directory = "/home/detection/source/data/inference/test_images/DJI_3468"
+	for filename in os.listdir(directory):
+	    if filename.endswith(".jpg") or filename.endswith(".JPG"): 
+	        image_path =  os.path.join(directory, filename)
+	        print (image_path)
+	        saved_name_image = filename.split(".")[0] + "_detected" + ".jpg"
+	        detector.save_detected_image(image_path, saving_path, saved_name_image)
 
-# saving_path = "/home/detection/source/inference/detected_images"
-# directory = "/home/detection/source/data/inference/test_images/DJI_3468"
-# for filename in os.listdir(directory):
-#     if filename.endswith(".jpg") or filename.endswith(".JPG"): 
-#         image_path =  os.path.join(directory, filename)
-#         print (image_path)
-#         saved_name_image = filename.split(".")[0] + "_detected" + ".jpg"
-#         detector.save_detected_image(image_path, saving_path, saved_name_image)
+
+
+#generate_xml_files()
+detect_elements_and_save_image()
+
